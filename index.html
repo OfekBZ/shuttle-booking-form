@@ -281,6 +281,8 @@
     margin-bottom: 7px;
   }
   .field label .opt{ color: var(--muted); font-weight: 400; }
+  .required-marker{ color: #C03221; font-weight: 700; }
+  body.high-contrast .required-marker{ color: #FF9990; }
 
   .time-input{ font-variant-numeric: tabular-nums; letter-spacing: .08em; }
   .time-picker-toggle{ position: absolute; right: 0; top: 0; width: 44px; height: 100%; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: var(--ink); cursor: pointer; }
@@ -1136,6 +1138,21 @@
 
     languageButtons.forEach(function(btn){
       btn.classList.toggle('active', btn.dataset.lang === currentLanguage);
+    });
+
+    document.querySelectorAll('#requiredNote, #transportForm label').forEach(node => {
+      if (!node.textContent.includes('*')) return;
+      const parts = node.textContent.split('*');
+      node.replaceChildren();
+      parts.forEach((part, index) => {
+        if (index > 0) {
+          const marker = document.createElement('span');
+          marker.className = 'required-marker';
+          marker.textContent = '*';
+          node.appendChild(marker);
+        }
+        node.appendChild(document.createTextNode(part));
+      });
     });
 
     updateAccessibilityState();
