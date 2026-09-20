@@ -9,15 +9,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink: #12203D;
-    --ink-2: #0B1526;
-    --amber: #E9A23B;
-    --amber-dark: #C97F1E;
-    --paper: #F3F4F7;
+    --ink: #164D46;
+    --ink-2: #103C37;
+    --amber: #F1AE62;
+    --amber-dark: #966022;
+    --paper: #F7F8F5;
     --white: #FFFFFF;
-    --text: #1C2431;
-    --muted: #6B7280;
-    --line: #E3E6EB;
+    --text: #203B36;
+    --muted: #66766F;
+    --line: #DFE7E0;
     --success: #2E9E6C;
     --success-bg: #E9F7F0;
     --error: #D65C4A;
@@ -30,7 +30,7 @@
   .page > *, .grid-2 > *, .time-picker > *, .form-card, fieldset{ min-width: 0; }
   body{
     font-family: 'Heebo', sans-serif;
-    background: var(--paper);
+    background: #F4F1EA;
     color: var(--text);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
@@ -141,25 +141,33 @@
   .accessibility-toolbar .lang-btn.active{
     background: var(--ink);
     border-color: var(--ink);
-    color: var(--white);
+    color: #fff;
   }
 
   .page{
     display: grid;
-    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     min-height: 100vh;
+    max-width: 1440px;
+    margin: auto;
+    padding: 24px;
+    gap: 24px;
   }
 
   /* ---------- Brand panel ---------- */
   .brand-panel{
-    background: linear-gradient(160deg, var(--ink) 0%, var(--ink-2) 100%);
-    color: var(--white);
-    padding: 56px 48px;
+    background: radial-gradient(ellipse at 0 30%, #2B6960 0%, transparent 65%), var(--ink-2);
+    color: #fff;
+    padding: 36px clamp(24px, 3.5vw, 52px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     position: relative;
     overflow: hidden;
+    border-radius: 28px;
+    position: sticky;
+    top: 24px;
+    align-self: start;
   }
 
   .brand-top .logo{
@@ -173,9 +181,9 @@
   .brand-top .logo svg{ width: 26px; height: 26px; flex-shrink: 0; }
   .brand-top .logo span.mark{ color: var(--amber); }
 
-  .brand-mid{ margin-top: 64px; }
+  .brand-mid{ margin-top: 48px; }
   .brand-mid h1{
-    font-size: 38px;
+    font-size: clamp(32px, 3.3vw, 48px);
     font-weight: 800;
     line-height: 1.25;
     margin: 0 0 16px;
@@ -183,14 +191,20 @@
   }
   .brand-mid p.tagline{
     font-size: 16px;
-    color: #C6CCDA;
+    color: #CEE0D8;
     line-height: 1.7;
     max-width: 380px;
-    margin: 0 0 40px;
+    margin: 0 0 24px;
   }
 
-  .route-visual{ margin: 8px 0 40px; }
-  .route-visual svg{ width: 100%; max-width: 320px; height: auto; display:block; }
+  .route-visual{ margin: 28px -12px 24px; }
+  .route-visual svg{ width: 100%; height: auto; display:block; }
+  .eyebrow{ display: inline-flex; align-items: center; gap: 8px; margin: 0 0 18px; font-size: 13px; font-weight: 600; letter-spacing: .03em; }
+  .eyebrow::before{ content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--amber); }
+  .hero-cta{ display: inline-flex; justify-content: center; align-items: center; gap: 16px; min-height: 48px; padding: 12px 22px; background: #F1AE62; color: #193D35; border-radius: 12px; text-decoration: none; font-weight: 700; }
+  .hero-cta:hover{ background: #FFBE78; }
+  .hero-cta::after{ content: '↗'; font-size: 22px; }
+  .booking-kicker{ color: var(--muted); font-size: 12px; letter-spacing: .08em; margin: 0 0 8px; }
   .route-line{
     stroke-dasharray: 6 8;
     stroke-dashoffset: 400;
@@ -202,17 +216,17 @@
   .route-pin.dest{ animation-delay: 1.4s; }
   @keyframes fadeIn{ to{ opacity: 1; } }
 
-  .features{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:18px; }
-  .features li{ display:flex; align-items:flex-start; gap:12px; font-size:14.5px; color:#DDE2EC; line-height:1.5; }
+  .features{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:12px; }
+  .features li{ display:flex; align-items:flex-start; gap:12px; font-size:14px; color:#E0EDE5; line-height:1.5; }
   .features li svg{ width:18px; height:18px; flex-shrink:0; margin-top:2px; color: var(--amber); }
 
-  .brand-bottom{ font-size: 13px; color: #8B93A6; border-top: 1px solid rgba(255,255,255,.08); padding-top: 20px; margin-top: 40px; }
+  .brand-bottom{ font-size: 13px; line-height: 1.7; color: #BED5CA; border-top: 1px solid rgba(255,255,255,.18); padding-top: 18px; margin-top: 28px; }
   .brand-bottom a{ color: #C6CCDA; text-decoration:none; }
 
   /* ---------- Form panel ---------- */
   .form-panel{
-    background: var(--paper);
-    padding: 56px 48px;
+    background: transparent;
+    padding: 12px 0 32px;
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -220,15 +234,16 @@
 
   .form-card{
     background: var(--white);
-    border-radius: 16px;
-    box-shadow: 0 1px 2px rgba(18,32,61,.04), 0 12px 32px rgba(18,32,61,.06);
-    padding: 40px 40px 32px;
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    box-shadow: 0 12px 40px rgba(23,60,45,.04);
+    padding: 32px;
     width: 100%;
-    max-width: 560px;
+    max-width: 640px;
   }
 
   .form-card header h2{
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 800;
     margin: 0 0 6px;
   }
@@ -243,10 +258,13 @@
     padding: 0;
     margin: 0 0 28px;
   }
+  form{ counter-reset: booking-section; }
+  legend::before{ counter-increment: booking-section; content: '0' counter(booking-section); display: inline-grid; place-items: center; width: 28px; height: 28px; margin-inline-end: 10px; border-radius: 50%; background: var(--paper); color: var(--ink); font-size: 12px; }
+  fieldset + fieldset{ padding-top: 16px; border-top: 1px solid var(--line); }
   legend{
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
-    color: var(--amber-dark);
+    color: var(--text);
     margin: 0 0 16px;
     padding: 0;
   }
@@ -270,6 +288,7 @@
   .time-picker{ display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px; }
   .time-picker select{ padding: 4px; text-align: center; font-variant-numeric: tabular-nums; }
   .time-picker option{ padding: 6px; }
+  .time-picker option:checked{ background: var(--ink); color: #fff; }
   .time-picker label{ display: block; text-align: center; font-size: 12px; }
   .input-wrap{ position: relative; }
   .input-wrap svg.icon{
@@ -291,7 +310,7 @@
     font-size: 16px;
     color: var(--text);
     background: var(--paper);
-    border: 1.5px solid transparent;
+    border: 1.5px solid var(--line);
     border-radius: var(--radius);
     padding: 12px 14px;
     transition: border-color .15s ease, background .15s ease;
@@ -314,7 +333,7 @@
   .submit-btn{
     width: 100%;
     background: var(--ink);
-    color: var(--white);
+    color: #fff;
     border: none;
     border-radius: var(--radius);
     font-family: 'Heebo', sans-serif;
@@ -391,28 +410,37 @@
 
   /* Responsive */
   @media (max-width: 980px){
-    .page{ grid-template-columns: 1fr; }
-    .brand-panel{ padding: 40px 28px; }
-    .brand-mid{ margin-top: 32px; }
-    .brand-mid h1{ font-size: 28px; }
-    .route-visual{ display: none; }
-    .form-panel{ padding: 32px 20px 56px; }
+    .page{ grid-template-columns: 1fr; max-width: 760px; padding: 20px; gap: 0; }
+    .brand-panel{ padding: 28px; position: relative; top: auto; }
+    .brand-mid{ margin-top: 24px; }
+    .brand-mid h1{ font-size: 36px; }
+    .route-visual{ max-width: 320px; margin: 12px auto; }
+    .features{ flex-direction: row; flex-wrap: wrap; gap: 12px 24px; }
+    .form-panel{ padding: 24px 0 88px; }
     .form-card{ padding: 28px 22px 24px; }
   }
   @media (max-width: 560px){
+    .page{ padding: 12px; }
     .grid-2{ grid-template-columns: 1fr; }
     .brand-bottom{ display:none; }
-    .brand-panel{ padding: 24px 20px; }
+    .brand-panel{ padding: 24px 20px; border-radius: 20px; }
     .brand-mid{ margin-top: 20px; }
-    .brand-mid h1{ font-size: 26px; }
+    .brand-mid h1{ font-size: 34px; }
     .brand-mid p.tagline{ margin-bottom: 20px; }
     .features{ gap: 10px; }
-    .form-panel{ padding: 20px 12px calc(96px + env(safe-area-inset-bottom)); }
+    .features li{ font-size: 12px; }
+    .route-visual{ max-width: 230px; margin: 12px auto; }
+    .hero-cta{ width: 100%; }
+    .form-panel{ padding: 16px 0 calc(96px + env(safe-area-inset-bottom)); }
     .form-card{ padding: 24px 16px; }
     .form-card header p{ margin-bottom: 24px; }
     .field label, .form-note{ overflow-wrap: anywhere; }
     .toast{ width: calc(100% - 24px); max-width: calc(100% - 24px); padding: 12px; }
   }
+  body.high-contrast{ background: var(--paper); }
+  body.high-contrast .brand-panel{ background: #020817; }
+  body.high-contrast legend::before{ color: var(--text); }
+  #main-content{ scroll-margin-top: 20px; }
 
   @media (prefers-reduced-motion: reduce){
     .route-line, .route-pin{ animation: none !important; stroke-dashoffset: 0; opacity: 1; }
@@ -422,7 +450,7 @@
 </style>
 </head>
 <body>
-  <a class="skip-link" href="#main-content">דלג לתוכן</a>
+
 
   <div class="accessibility-widget">
     <button type="button" id="accessibilityToggle" class="accessibility-toggle" aria-label="כלי נגישות" aria-expanded="false" aria-controls="accessibilityPanel">
@@ -453,14 +481,34 @@
     </div>
 
     <div class="brand-mid">
-      <h1 data-i18n="heroTitle">מסע בטוח,<br>בכל שעה ובכל יעד</h1>
+      <p class="eyebrow" data-design="eyebrow">הסעות פרטיות וקבוצתיות</p>
+      <h1 data-i18n="heroTitle">ההסעה שלכם.<br>הדרך בראש שקט.</h1>
       <p class="tagline" data-i18n="heroTagline">מלאו את פרטי ההסעה ואנחנו נחזור אליכם עם אישור וכל הפרטים לפני היציאה לדרך.</p>
+      <a href="#main-content" class="hero-cta" data-design="startBooking">להזמנת הסעה</a>
 
-      <div class="route-visual">
-        <svg viewBox="0 0 320 90" fill="none">
-          <path class="route-line" d="M15 70 C 80 70, 90 20, 160 20 S 250 70, 305 20" stroke="#E9A23B" stroke-width="2.5" stroke-linecap="round"/>
-          <circle class="route-pin origin" cx="15" cy="70" r="6" fill="#12203D" stroke="#E9A23B" stroke-width="2.5"/>
-          <circle class="route-pin dest" cx="305" cy="20" r="6" fill="#E9A23B"/>
+      <div class="route-visual" aria-hidden="true">
+        <svg viewBox="0 0 440 235" fill="none" focusable="false">
+          <circle cx="333" cy="63" r="31" fill="#F1AE62"/>
+          <path d="M15 171C52 124 88 134 122 106S194 70 237 114 318 131 369 105 419 126 436 149V200H15Z" fill="#39776A"/>
+          <path d="M21 184C85 153 120 190 180 157S279 169 329 155 396 154 426 177V214H21Z" fill="#74A48C"/>
+          <path d="M19 215H422" stroke="#B9D0AD" stroke-width="2" stroke-linecap="round"/>
+          <path d="M33 64C70 37 139 48 160 75S210 123 245 74" stroke="#94B9A5" stroke-width="2" stroke-dasharray="5 7"/>
+          <circle cx="33" cy="64" r="6" fill="#F1AE62"/>
+          <path d="M245 36c-12 0-20 9-20 19 0 14 20 32 20 32s20-18 20-32c0-10-8-19-20-19Z" fill="#F1AE62"/>
+          <circle cx="245" cy="55" r="7" fill="#164D46"/>
+          <ellipse cx="226" cy="208" rx="146" ry="10" fill="#164D46" fill-opacity=".3"/>
+          <path d="M84 185V120c0-11 8-19 19-19h196c15 0 24 8 30 20l25 49v27H84Z" fill="#FAF7ED"/>
+          <path d="M290 109h12c9 0 15 7 19 15l16 34h-47Z" fill="#214E48"/>
+          <path d="M109 111h48v43h-48a5 5 0 0 1-5-5v-33a5 5 0 0 1 5-5Z" fill="#214E48"/>
+          <path d="M165 111h48v43h-48zM221 111h48v43h-48z" fill="#214E48"/>
+          <path d="m113 116 21 0-24 32h-4v-20ZM173 116h21l-25 33h-4v-21ZM229 116h21l-25 33h-4v-21Z" fill="#89B1A0" fill-opacity=".35"/>
+          <path d="M84 169h194v13H84Z" fill="#F1AE62"/>
+          <path d="M281 108v88M295 167h11" stroke="#C6D4C8" stroke-width="3" stroke-linecap="round"/>
+          <rect x="80" y="189" width="279" height="10" rx="4" fill="#D7DFD1"/>
+          <path d="M344 171h10v10h-10" fill="#F1AE62"/>
+          <circle cx="133" cy="196" r="20" fill="#173D38"/><circle cx="133" cy="196" r="9" fill="#D7DFD1"/>
+          <circle cx="308" cy="196" r="20" fill="#173D38"/><circle cx="308" cy="196" r="9" fill="#D7DFD1"/>
+          <rect x="177" y="185" width="59" height="3" rx="1.5" fill="#C6D4C8"/>
         </svg>
       </div>
 
@@ -481,7 +529,7 @@
     </div>
 
     <div class="brand-bottom" data-i18n="helpText">
-      צריכים עזרה? התקשרו <a href="tel:*1234">*1234</a>
+      שולחים בקשה, ואנחנו חוזרים אליכם לתיאום ולאישור הנסיעה.
     </div>
   </aside>
 
@@ -489,6 +537,7 @@
   <main class="form-panel" id="main-content">
     <div class="form-card">
       <header>
+        <div class="booking-kicker" data-design="bookingKicker">מתכננים את הדרך</div>
         <h2 data-i18n="formTitle">הזמנת הסעה</h2>
         <p id="requiredNote" data-i18n="requiredNote">כל השדות המסומנים ב־* הם שדות חובה</p>
       </header>
@@ -514,6 +563,13 @@
             </div>
           </div>
           <p class="form-note" id="phoneHint">מספר ישראלי בלבד, לדוגמה 050-1234567 או +972501234567</p>
+          <div class="field">
+            <label for="email" data-i18n="emailLabel">אימייל *</label>
+            <div class="input-wrap">
+              <input type="email" id="email" name="email" data-i18n-placeholder="emailPlaceholder" placeholder="name@example.com" autocomplete="email" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$">
+              <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9zm0 0 8 5.5 8-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
         </fieldset>
 
         <fieldset>
@@ -538,14 +594,8 @@
             </div>
           </div>
 
-          <div class="field">
-            <label for="email" data-i18n="emailLabel">אימייל *</label>
-            <div class="input-wrap">
-              <input type="email" id="email" name="email" data-i18n-placeholder="emailPlaceholder" placeholder="name@example.com" autocomplete="email" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$">
-              <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9zm0 0 8 5.5 8-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-          </div>
 
+          <div class="grid-2">
           <div class="field">
             <label for="pickupCity" id="pickupCityLabel">עיר / יישוב לאיסוף *</label>
             <input type="text" id="pickupCity" name="pickupCity" list="israeliCities" dir="rtl" autocomplete="off" required>
@@ -560,6 +610,9 @@
             </div>
           </div>
 
+          </div>
+
+          <div class="grid-2">
           <div class="field">
             <label for="dropoffCity" id="dropoffCityLabel">עיר / יישוב להורדה *</label>
             <input type="text" id="dropoffCity" name="dropoffCity" list="israeliCities" dir="rtl" autocomplete="off" required>
@@ -571,6 +624,8 @@
               <input type="text" id="destination" name="destination" data-i18n-placeholder="destinationPlaceholder" placeholder="כתובת או שם מקום" required>
               <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="M12 21s-6.5-5.6-6.5-10.5A6.5 6.5 0 0 1 18.5 10.5C18.5 15.4 12 21 12 21z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10.5" r="2.1" stroke="currentColor" stroke-width="1.6"/></svg>
             </div>
+          </div>
+
           </div>
 
           <div class="grid-2">
@@ -664,16 +719,16 @@
     he: {
       dir: 'rtl',
       lang: 'he',
-      heroTitle: 'מסע בטוח,<br>בכל שעה ובכל יעד',
-      heroTagline: 'מלאו את פרטי ההסעה ואנחנו נחזור אליכם עם אישור וכל הפרטים לפני היציאה לדרך.',
-      feature1: 'נהגים מקצועיים ורכבים מתוחזקים',
-      feature2: 'אישור הזמנה מהיר בטלפון או בהודעה',
-      feature3: 'התאמה להסעות פרטיות, קבוצות ואירועים',
-      helpText: 'צריכים עזרה? התקשרו ',
+      heroTitle: 'ההסעה שלכם.<br>הדרך בראש שקט.',
+      heroTagline: 'לעבודה, לאירוע או ליום של חוויות. ספרו לנו מאיפה, לאן ומתי — ונתאם את ההסעה שלכם.',
+      feature1: 'עד 24 נוסעים יחד',
+      feature2: 'איסוף מהכתובת שלכם',
+      feature3: 'אפשרות להסעה הלוך וחזור',
+      helpText: 'שולחים בקשה, ואנחנו חוזרים אליכם לתיאום ולאישור הנסיעה.',
       formTitle: 'הזמנת הסעה',
       requiredNote: 'כל השדות המסומנים ב־* הם שדות חובה',
       travelerInfoLegend: 'פרטי הנוסע',
-      tripInfoLegend: 'פרטי הננסיעה',
+      tripInfoLegend: 'פרטי הנסיעה',
       passengerNameLabel: 'שם מלא *',
       phoneLabel: 'מספר טלפון *',
       tripDateLabel: 'תאריך הנסיעה *',
@@ -685,10 +740,9 @@
       returnTimeLabel: 'שעת חזור',
       notesLabel: 'בקשות מיוחדות / הערות',
       optionalText: '(לא חובה)',
-      submitButton: 'שליחת בקשה',
+      submitButton: 'שליחת בקשה להסעה',
       submitAria: 'שליחת בקשה להזמנת הסעה',
-      formNote: 'הבקשה תישלח ישירות לצוות התפעול שלנו',
-      skipLink: 'דלג לתוכן',
+      formNote: 'לאחר השליחה ניצור קשר לתיאום ולאישור ההזמנה.',
       accessibilityLabel: 'כלי נגישות',
       passengerNamePlaceholder: 'לדוגמה: דנה כהן',
       phonePlaceholder: '05X-XXXXXXX',
@@ -705,13 +759,13 @@
     en: {
       dir: 'ltr',
       lang: 'en',
-      heroTitle: 'Safe trip,<br>any time, anywhere',
-      heroTagline: 'Fill in the trip details and we will confirm everything before departure.',
-      feature1: 'Professional drivers and well-maintained vehicles',
-      feature2: 'Fast booking confirmation by phone or message',
-      feature3: 'Suitable for private rides, groups, and events',
-      helpText: 'Need help? Call ',
-      formTitle: 'Booking shuttle',
+      heroTitle: 'Your shuttle.<br>A smoother journey.',
+      heroTagline: 'For work, celebrations, or a day out. Tell us where and when, and we’ll help arrange your ride.',
+      feature1: 'Travel together, up to 24 passengers',
+      feature2: 'Pickup at your address',
+      feature3: 'One-way or return trips',
+      helpText: 'Send your request. We’ll get in touch to arrange and confirm your trip.',
+      formTitle: 'Book your shuttle',
       requiredNote: 'All fields marked with * are required',
       travelerInfoLegend: 'Traveler details',
       tripInfoLegend: 'Trip details',
@@ -726,9 +780,9 @@
       returnTimeLabel: 'Return time',
       notesLabel: 'Special requests / notes',
       optionalText: '(optional)',
-      submitButton: 'Send request',
+      submitButton: 'Request a shuttle',
       submitAria: 'Send shuttle booking request',
-      formNote: 'Your request will be sent directly to our operations team',
+      formNote: 'We’ll contact you to arrange and confirm your booking.',
       skipLink: 'Skip to content',
       accessibilityLabel: 'Accessibility tools',
       passengerNamePlaceholder: 'Example: Jane Smith',
@@ -746,12 +800,12 @@
     ru: {
       dir: 'ltr',
       lang: 'ru',
-      heroTitle: 'Безопасная поездка,<br>в любое время и в любой пункт',
-      heroTagline: 'Заполните детали поездки, и мы подтвердим всё до выезда.',
-      feature1: 'Профессиональные водители и исправные автомобили',
-      feature2: 'Быстрое подтверждение заказа по телефону или сообщению',
-      feature3: 'Подходит для частных поездок, групп и мероприятий',
-      helpText: 'Нужна помощь? Позвоните ',
+      heroTitle: 'Ваш трансфер.<br>Спокойно в пути.',
+      heroTagline: 'На работу, на праздник или на прогулку. Расскажите, куда и когда, — мы поможем организовать поездку.',
+      feature1: 'До 24 пассажиров вместе',
+      feature2: 'Подача по вашему адресу',
+      feature3: 'В одну сторону или туда и обратно',
+      helpText: 'Оставьте заявку. Мы свяжемся с вами для согласования и подтверждения поездки.',
       formTitle: 'Заказ трансфера',
       requiredNote: 'Все поля со знаком * обязательны',
       travelerInfoLegend: 'Данные пассажира',
@@ -769,7 +823,7 @@
       optionalText: '(необязательно)',
       submitButton: 'Отправить запрос',
       submitAria: 'Отправить запрос на заказ трансфера',
-      formNote: 'Запрос будет отправлен напрямую нашей службе операций',
+      formNote: 'Мы свяжемся с вами для согласования и подтверждения заказа.',
       skipLink: 'Перейти к содержимому',
       accessibilityLabel: 'Средства доступности',
       passengerNamePlaceholder: 'Например: Анна Иванова',
@@ -787,6 +841,11 @@
   };
 
   let currentLanguage = 'he';
+  const designLabels = {
+    he: { eyebrow: 'הסעות פרטיות וקבוצתיות', startBooking: 'להזמנת הסעה', bookingKicker: 'מתכננים את הדרך' },
+    en: { eyebrow: 'PRIVATE & GROUP SHUTTLES', startBooking: 'Book a shuttle', bookingKicker: 'LET’S PLAN YOUR RIDE' },
+    ru: { eyebrow: 'ИНДИВИДУАЛЬНЫЕ И ГРУППОВЫЕ ПОЕЗДКИ', startBooking: 'Заказать трансфер', bookingKicker: 'ПЛАНИРУЕМ ВАШУ ПОЕЗДКУ' }
+  };
 
   const bookingLabels = {
     he: {
@@ -925,8 +984,12 @@
     const text = translations[currentLanguage];
     document.documentElement.lang = text.lang;
     document.documentElement.dir = text.dir;
+    document.querySelectorAll('[data-design]').forEach(node => {
+      node.textContent = designLabels[currentLanguage][node.dataset.design];
+    });
 
-    document.querySelector('.skip-link').textContent = text.skipLink;
+    const skipLink = document.querySelector('.skip-link');
+    if (skipLink) skipLink.textContent = text.skipLink;
     document.querySelector('.accessibility-toolbar').setAttribute('aria-label', text.accessibilityLabel);
     accessibilityToggle.setAttribute('aria-label', text.accessibilityLabel);
 
