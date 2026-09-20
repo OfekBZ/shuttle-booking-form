@@ -283,6 +283,20 @@
   .field label .opt{ color: var(--muted); font-weight: 400; }
 
   .time-input{ font-variant-numeric: tabular-nums; letter-spacing: .08em; }
+  .time-picker-toggle{ position: absolute; right: 0; top: 0; width: 44px; height: 100%; display: grid; place-items: center; border: 0; border-radius: 10px; background: transparent; color: var(--ink); cursor: pointer; }
+  .time-picker-toggle svg{ width: 20px; height: 20px; pointer-events: none; }
+  .time-picker-toggle:hover{ background: var(--line); }
+  .time-popover{ position: absolute; top: calc(100% + 8px); inset-inline: 0; z-index: 110; padding: 12px; border: 1px solid var(--line); border-radius: 16px; background: var(--white); box-shadow: 0 12px 36px rgba(16,60,55,.18); }
+  .time-popover[hidden]{ display: none; }
+  .time-columns{ display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 12px; }
+  .time-columns label{ display: block; text-align: center; }
+  .time-columns select{ height: 184px; padding: 4px; text-align: center; font-variant-numeric: tabular-nums; overscroll-behavior: contain; touch-action: pan-y; }
+  .time-columns option{ padding: 10px 4px; }
+  .time-columns option:checked{ background: var(--ink); color: #fff; }
+  .time-picker-actions{ display: flex; gap: 8px; margin-top: 12px; }
+  .time-picker-actions button{ flex: 1; min-width: 0; min-height: 44px; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--text); font: inherit; font-size: 14px; cursor: pointer; }
+  .time-picker-actions .time-apply{ background: var(--ink); color: #fff; }
+  body.high-contrast .time-picker-toggle{ color: var(--text); }
   .input-wrap{ position: relative; }
   .input-wrap svg.icon{
     position: absolute;
@@ -577,7 +591,7 @@
               <label for="pickupTime" data-i18n="pickupTimeLabel">שעת איסוף *</label>
               <div class="input-wrap">
                 <input class="time-input" type="text" id="pickupTime" name="pickupTime" dir="ltr" inputmode="numeric" placeholder="HH:MM" maxlength="5" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" required>
-                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <button type="button" class="time-picker-toggle" data-time-input="pickupTime" aria-label="בחירת שעת איסוף" aria-haspopup="dialog" aria-expanded="false" aria-controls="timePopover"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
               </div>
             </div>
           </div>
@@ -628,7 +642,7 @@
               <label for="returnTime" data-i18n="returnTimeLabel">שעת חזור <span class="opt" data-i18n="optionalText">(לא חובה)</span></label>
               <div class="input-wrap">
                 <input class="time-input" type="text" id="returnTime" name="returnTime" dir="ltr" inputmode="numeric" placeholder="HH:MM" maxlength="5" pattern="([01][0-9]|2[0-3]):[0-5][0-9]">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                <button type="button" class="time-picker-toggle" data-time-input="returnTime" aria-label="בחירת שעת חזור" aria-haspopup="dialog" aria-expanded="false" aria-controls="timePopover"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
               </div>
             </div>
           </div>
@@ -654,6 +668,17 @@
 <div class="toast" id="toast" role="status" aria-live="polite">
   <svg class="toast-icon" viewBox="0 0 24 24" fill="none" id="toastIcon"></svg>
   <span id="toastText"></span>
+</div>
+
+<div id="timePopover" class="time-popover" role="dialog" aria-label="בחירת שעה" hidden>
+  <div class="time-columns" dir="ltr">
+    <div><label for="pickerHour" id="pickerHourLabel">שעה</label><select id="pickerHour" size="5"></select></div>
+    <div><label for="pickerMinute" id="pickerMinuteLabel">דקה</label><select id="pickerMinute" size="5"></select></div>
+  </div>
+  <div class="time-picker-actions">
+    <button type="button" id="applyTime" class="time-apply">אישור</button>
+    <button type="button" id="cancelTime">ביטול</button>
+  </div>
 </div>
 
 <script src="cities.js"></script>
@@ -865,6 +890,76 @@
     }
   };
 
+  const timePickerText = {
+    he: { title: 'בחירת שעה', apply: 'אישור', cancel: 'ביטול' },
+    en: { title: 'Choose time', apply: 'Set time', cancel: 'Cancel' },
+    ru: { title: 'Выберите время', apply: 'Готово', cancel: 'Отмена' }
+  };
+  const timePopover = document.getElementById('timePopover');
+  const pickerHour = document.getElementById('pickerHour');
+  const pickerMinute = document.getElementById('pickerMinute');
+  let activeTimeButton = null;
+  [[pickerHour, 24], [pickerMinute, 60]].forEach(([select, count]) => {
+    for (let value = 0; value < count; value++) {
+      const padded = String(value).padStart(2, '0');
+      select.add(new Option(padded, padded));
+    }
+  });
+
+  function closeTimePicker(restoreFocus = false) {
+    timePopover.hidden = true;
+    if (activeTimeButton) {
+      activeTimeButton.setAttribute('aria-expanded', 'false');
+      if (restoreFocus) activeTimeButton.focus();
+    }
+    activeTimeButton = null;
+  }
+
+  document.querySelectorAll('.time-picker-toggle').forEach(button => {
+    button.addEventListener('click', () => {
+      if (activeTimeButton === button) { closeTimePicker(); return; }
+      closeTimePicker();
+      activeTimeButton = button;
+      const field = document.getElementById(button.dataset.timeInput);
+      const value = /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(field.value) ? field.value : '09:00';
+      [pickerHour.value, pickerMinute.value] = value.split(':');
+      button.parentElement.appendChild(timePopover);
+      timePopover.hidden = false;
+      timePopover.setAttribute('aria-label', button.getAttribute('aria-label'));
+      button.setAttribute('aria-expanded', 'true');
+      pickerHour.focus({ preventScroll: true });
+      [pickerHour, pickerMinute].forEach(select => {
+        select.scrollTop = Math.max(0, select.selectedIndex - 2) * select.options[0].getBoundingClientRect().height;
+      });
+      timePopover.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+  });
+  document.getElementById('applyTime').addEventListener('click', () => {
+    if (!activeTimeButton) return;
+    const field = document.getElementById(activeTimeButton.dataset.timeInput);
+    field.value = pickerHour.value + ':' + pickerMinute.value;
+    field.dispatchEvent(new Event('input', { bubbles: true }));
+    field.dispatchEvent(new Event('change', { bubbles: true }));
+    closeTimePicker(true);
+  });
+  document.getElementById('cancelTime').addEventListener('click', () => closeTimePicker(true));
+  timePopover.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && event.target.tagName === 'SELECT') {
+      event.preventDefault();
+      document.getElementById('applyTime').click();
+    }
+  });
+  document.addEventListener('click', event => {
+    if (activeTimeButton && !activeTimeButton.contains(event.target) && !timePopover.contains(event.target)) closeTimePicker();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && activeTimeButton) { event.preventDefault(); closeTimePicker(true); }
+  });
+  timePopover.addEventListener('focusout', event => {
+    if (event.relatedTarget && !timePopover.contains(event.relatedTarget) && event.relatedTarget !== activeTimeButton) closeTimePicker();
+  });
+  form.addEventListener('reset', () => closeTimePicker());
+
   ISRAEL_CITIES.slice().sort((a, b) => a.localeCompare(b, 'he')).forEach(city => {
     document.getElementById('israeliCities').appendChild(new Option(city, city));
   });
@@ -1018,6 +1113,15 @@
     document.getElementById('notes').placeholder = text.notesPlaceholder;
 
     const booking = bookingLabels[currentLanguage];
+    closeTimePicker();
+    document.getElementById('pickerHourLabel').textContent = booking.hour;
+    document.getElementById('pickerMinuteLabel').textContent = booking.minute;
+    document.getElementById('applyTime').textContent = timePickerText[currentLanguage].apply;
+    document.getElementById('cancelTime').textContent = timePickerText[currentLanguage].cancel;
+    document.querySelectorAll('.time-picker-toggle').forEach(button => {
+      const fieldLabel = button.dataset.timeInput === 'pickupTime' ? text.pickupTimeLabel.replace(' *', '') : text.returnTimeLabel;
+      button.setAttribute('aria-label', timePickerText[currentLanguage].title + ': ' + fieldLabel);
+    });
     document.getElementById('pickupCityLabel').textContent = booking.city;
     form.pickupCity.placeholder = booking.chooseCity;
     form.dropoffCity.placeholder = booking.chooseCity;
