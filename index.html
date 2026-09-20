@@ -550,7 +550,7 @@
   // ============================================================
   // 🔧 הגדרות — הדביקו כאן את כתובת ה-Web App של Google Apps Script
   // ============================================================
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxbdPUwAnyzAjp3GnF71Epdi59LM3y9BLUXzSJsbFFSCHOXVaeWupCBertq1NbJdVVd/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFSwLKC_GoUZlkox7UGsY8t2zMoVwyfwhriWCaDM3TNkqbSO8q4gk9kL4bVR4ABIMw/exec";
 
   const form = document.getElementById('transportForm');
   const submitBtn = document.getElementById('submitBtn');
@@ -827,7 +827,7 @@
       return;
     }
 
-    if(GOOGLE_SCRIPT_URL.includes('https://script.google.com/macros/s/AKfycbxbdPUwAnyzAjp3GnF71Epdi59LM3y9BLUXzSJsbFFSCHOXVaeWupCBertq1NbJdVVd/exec') || GOOGLE_SCRIPT_URL.includes('https://script.google.com/macros/s/AKfycbxbdPUwAnyzAjp3GnF71Epdi59LM3y9BLUXzSJsbFFSCHOXVaeWupCBertq1NbJdVVd/exec')){
+    if (!GOOGLE_SCRIPT_URL || !GOOGLE_SCRIPT_URL.trim() || !GOOGLE_SCRIPT_URL.startsWith('https://')) {
       showToast(translations[currentLanguage].missingConfigToast, 'error');
       return;
     }
@@ -863,7 +863,7 @@
         form.reset();
         form.passengers.value = 1;
       } else {
-        throw new Error(result && result.error ? result.error : 'שגיאה לא ידועה');
+        throw new Error(result && result.message ? result.message : (result && result.error ? result.error : 'שגיאה לא ידועה'));
       }
     } catch(err){
       console.error(err);
