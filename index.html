@@ -81,21 +81,44 @@
     transform: translateY(0);
   }
 
-  .accessibility-toolbar{
+  .accessibility-widget{
     position: fixed;
     left: 20px;
     bottom: 20px;
+    z-index: 100;
+  }
+  .accessibility-toggle{
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(18,32,61,.2);
+  }
+  .accessibility-toggle svg{ width: 30px; height: 30px; }
+  .accessibility-toolbar{
+    position: absolute;
+    left: 0;
+    bottom: 64px;
+    width: min(280px, calc(100vw - 48px));
+    max-height: 60vh;
+    overflow-y: auto;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    background: rgba(255,255,255,.85);
+    background: var(--white);
     backdrop-filter: blur(8px);
     padding: 10px;
-    border-radius: 999px;
+    border-radius: 16px;
     border: 1px solid var(--line);
     box-shadow: 0 10px 30px rgba(18,32,61,.08);
     z-index: 100;
   }
+  .accessibility-toolbar[hidden]{ display: none; }
   .accessibility-toolbar button{
     border: 1px solid var(--line);
     background: var(--white);
@@ -386,13 +409,21 @@
 <body>
   <a class="skip-link" href="#main-content">דלג לתוכן</a>
 
-  <div class="accessibility-toolbar" aria-label="כלי נגישות">
+  <div class="accessibility-widget">
+    <button type="button" id="accessibilityToggle" class="accessibility-toggle" aria-label="כלי נגישות" aria-expanded="false" aria-controls="accessibilityPanel">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+        <circle cx="11" cy="4" r="2" fill="currentColor"/>
+        <path d="M10 8v6h6l3 6 3-1M11 9h5M7 10a6 6 0 1 0 8 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  <div class="accessibility-toolbar" id="accessibilityPanel" role="group" aria-label="כלי נגישות" hidden>
     <button type="button" id="fontDecreaseBtn" aria-label="הקטנת טקסט">A-</button>
     <button type="button" id="fontIncreaseBtn" aria-label="הגדלת טקסט">A+</button>
     <button type="button" id="contrastToggleBtn" aria-pressed="false" aria-label="הפעלת ניגודיות גבוהה">ניגודיות</button>
     <button type="button" class="lang-btn active" data-lang="he" aria-label="עברית">HE</button>
     <button type="button" class="lang-btn" data-lang="en" aria-label="English">EN</button>
     <button type="button" class="lang-btn" data-lang="ru" aria-label="Русский">RU</button>
+  </div>
   </div>
 
 <div class="page">
@@ -586,6 +617,33 @@
   const fontIncreaseBtn = document.getElementById('fontIncreaseBtn');
   const contrastToggleBtn = document.getElementById('contrastToggleBtn');
   const languageButtons = Array.from(document.querySelectorAll('.lang-btn'));
+  const accessibilityToggle = document.getElementById('accessibilityToggle');
+  const accessibilityPanel = document.getElementById('accessibilityPanel');
+  const accessibilityWidget = document.querySelector('.accessibility-widget');
+
+  function setAccessibilityOpen(open, restoreFocus = false) {
+    accessibilityPanel.hidden = !open;
+    accessibilityToggle.setAttribute('aria-expanded', String(open));
+    if (restoreFocus) accessibilityToggle.focus();
+  }
+  accessibilityToggle.addEventListener('click', () => {
+    setAccessibilityOpen(accessibilityPanel.hidden);
+  });
+  document.addEventListener('click', event => {
+    if (!accessibilityWidget.contains(event.target)) {
+      setAccessibilityOpen(false, accessibilityPanel.contains(document.activeElement));
+    }
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !accessibilityPanel.hidden) {
+      setAccessibilityOpen(false, true);
+    }
+  });
+  accessibilityWidget.addEventListener('focusout', event => {
+    if (event.relatedTarget && !accessibilityWidget.contains(event.relatedTarget)) {
+      setAccessibilityOpen(false);
+    }
+  });
 
   const translations = {
     he: {
@@ -835,6 +893,7 @@
 
     document.querySelector('.skip-link').textContent = text.skipLink;
     document.querySelector('.accessibility-toolbar').setAttribute('aria-label', text.accessibilityLabel);
+    accessibilityToggle.setAttribute('aria-label', text.accessibilityLabel);
 
     document.querySelector('[data-i18n="heroTitle"]').innerHTML = text.heroTitle;
     document.querySelector('[data-i18n="heroTagline"]').textContent = text.heroTagline;
