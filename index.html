@@ -27,7 +27,7 @@
 
   *{ box-sizing: border-box; }
   html, body{ margin:0; padding:0; }
-  .page > *, .grid-2 > *, .time-picker > *, .form-card, fieldset{ min-width: 0; }
+  .page > *, .grid-2 > *, .form-card, fieldset{ min-width: 0; }
   body{
     font-family: 'Heebo', sans-serif;
     background: #F4F1EA;
@@ -282,11 +282,7 @@
   }
   .field label .opt{ color: var(--muted); font-weight: 400; }
 
-  .time-picker{ display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 8px; }
-  .time-picker select{ padding: 4px; text-align: center; font-variant-numeric: tabular-nums; }
-  .time-picker option{ padding: 6px; }
-  .time-picker option:checked{ background: var(--ink); color: #fff; }
-  .time-picker label{ display: block; text-align: center; font-size: 12px; }
+  .time-input{ font-variant-numeric: tabular-nums; letter-spacing: .08em; }
   .input-wrap{ position: relative; }
   .input-wrap svg.icon{
     position: absolute;
@@ -580,11 +576,8 @@
             <div class="field">
               <label for="pickupTime" data-i18n="pickupTimeLabel">שעת איסוף *</label>
               <div class="input-wrap">
-                <div class="time-picker" dir="ltr">
-                  <div><label for="pickupTime" class="hour-label">שעה</label><select id="pickupTime" name="pickupHour" size="3" required></select></div>
-                  <span aria-hidden="true">:</span>
-                  <div><label for="pickupMinute" class="minute-label">דקה</label><select id="pickupMinute" name="pickupMinute" size="3" required></select></div>
-                </div>
+                <input class="time-input" type="text" id="pickupTime" name="pickupTime" dir="ltr" inputmode="numeric" placeholder="HH:MM" maxlength="5" pattern="([01][0-9]|2[0-3]):[0-5][0-9]" required>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
               </div>
             </div>
           </div>
@@ -634,11 +627,8 @@
             <div class="field">
               <label for="returnTime" data-i18n="returnTimeLabel">שעת חזור <span class="opt" data-i18n="optionalText">(לא חובה)</span></label>
               <div class="input-wrap">
-                <div class="time-picker" dir="ltr">
-                  <div><label for="returnTime" class="hour-label">שעה</label><select id="returnTime" name="returnHour" size="3"></select></div>
-                  <span aria-hidden="true">:</span>
-                  <div><label for="returnMinute" class="minute-label">דקה</label><select id="returnMinute" name="returnMinute" size="3"></select></div>
-                </div>
+                <input class="time-input" type="text" id="returnTime" name="returnTime" dir="ltr" inputmode="numeric" placeholder="HH:MM" maxlength="5" pattern="([01][0-9]|2[0-3]):[0-5][0-9]">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
               </div>
             </div>
           </div>
@@ -849,7 +839,7 @@
       passengers: 'מספר נוסעים (1–24) *', hour: 'שעה (00–23)', minute: 'דקה (00–59)',
       phone: 'מספר ישראלי, ספרות בלבד. לדוגמה: 0501234567',
       dropoffCity: 'עיר / יישוב להורדה *', dropoffAddress: 'כתובת ההורדה *',
-      cityError: 'בחרו עיר / יישוב מהרשימה.', timeError: 'בחרו גם שעה וגם דקה, או השאירו את שתיהן ריקות.',
+      cityError: 'בחרו עיר / יישוב מהרשימה.', timeError: 'יש להזין שעה בפורמט 24 שעות, לדוגמה 08:30 או 18:45.',
       phoneError: 'יש להזין מספר טלפון ישראלי תקין, כולל קידומת.',
       addressError: 'יש להזין כתובת איסוף.'
     },
@@ -859,7 +849,7 @@
       passengers: 'Passengers (1–24) *', hour: 'Hour (00–23)', minute: 'Minute (00–59)',
       phone: 'Israeli number, digits only. Example: 0501234567',
       dropoffCity: 'Dropoff city / locality *', dropoffAddress: 'Dropoff address *',
-      cityError: 'Choose a city / locality from the suggestions.', timeError: 'Choose both hour and minute, or leave both blank.',
+      cityError: 'Choose a city / locality from the suggestions.', timeError: 'Enter a 24-hour time, such as 08:30 or 18:45.',
       phoneError: 'Enter a valid Israeli phone number, including the area code.',
       addressError: 'Enter a pickup address.'
     },
@@ -869,7 +859,7 @@
       passengers: 'Количество пассажиров (1–24) *', hour: 'Час (00–23)', minute: 'Минута (00–59)',
       phone: 'Израильский номер, только цифры. Например: 0501234567',
       dropoffCity: 'Город / населённый пункт высадки *', dropoffAddress: 'Адрес высадки *',
-      cityError: 'Выберите населённый пункт из списка.', timeError: 'Выберите часы и минуты или оставьте оба поля пустыми.',
+      cityError: 'Выберите населённый пункт из списка.', timeError: 'Введите время в 24-часовом формате, например 08:30 или 18:45.',
       phoneError: 'Введите действительный израильский номер телефона с кодом.',
       addressError: 'Введите адрес подачи.'
     }
@@ -878,12 +868,15 @@
   ISRAEL_CITIES.slice().sort((a, b) => a.localeCompare(b, 'he')).forEach(city => {
     document.getElementById('israeliCities').appendChild(new Option(city, city));
   });
-  [[form.pickupHour, 24], [form.pickupMinute, 60], [form.returnHour, 24], [form.returnMinute, 60]].forEach(([select, count]) => {
-    select.add(new Option('—', '', true, true));
-    for (let value = 0; value < count; value++) {
-      const padded = String(value).padStart(2, '0');
-      select.add(new Option(padded, padded));
-    }
+  [form.pickupTime, form.returnTime].forEach(field => {
+    field.addEventListener('input', () => {
+      // Four digits are convenient to enter on a phone's numeric keyboard.
+      if (/^\d{4}$/.test(field.value)) field.value = field.value.slice(0, 2) + ':' + field.value.slice(2);
+    });
+    field.addEventListener('blur', () => {
+      if (/^\d:[0-5]\d$/.test(field.value)) field.value = '0' + field.value;
+      validateBookingFields();
+    });
   });
 
   function normalizeIsraeliPhone(value) {
@@ -905,8 +898,10 @@
     [form.pickupCity, form.dropoffCity].forEach(field => {
       field.setCustomValidity(field.value && !ISRAEL_CITIES.includes(field.value.trim()) ? bookingLabels[currentLanguage].cityError : '');
     });
-    const partialReturn = Boolean(form.returnHour.value) !== Boolean(form.returnMinute.value);
-    [form.returnHour, form.returnMinute].forEach(field => field.setCustomValidity(partialReturn ? bookingLabels[currentLanguage].timeError : ''));
+    [form.pickupTime, form.returnTime].forEach(field => {
+      const valid = /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(field.value);
+      field.setCustomValidity(field.value && !valid ? bookingLabels[currentLanguage].timeError : '');
+    });
   }
   form.phone.addEventListener('input', () => {
     const position = form.phone.selectionStart;
@@ -929,7 +924,7 @@
       event.target.value = event.target.value.replace(/^(\d{2})(\d{2})(\d{4})$/, '$1/$2/$3');
     }
   });
-  [form.tripDate, form.origin, form.pickupCity, form.dropoffCity, form.returnHour, form.returnMinute].forEach(field => {
+  [form.tripDate, form.origin, form.pickupCity, form.dropoffCity, form.pickupTime, form.returnTime].forEach(field => {
     field.addEventListener('input', validateBookingFields);
     field.addEventListener('change', validateBookingFields);
   });
@@ -1033,11 +1028,6 @@
     document.querySelector('[data-i18n="passengersLabel"]').textContent = booking.passengers;
     document.getElementById('phoneHint').textContent = booking.phone;
     form.phone.placeholder = '0501234567';
-    document.querySelectorAll('.hour-label').forEach(label => label.textContent = booking.hour);
-    document.querySelectorAll('.minute-label').forEach(label => label.textContent = booking.minute);
-    [[form.pickupHour, booking.hour], [form.pickupMinute, booking.minute], [form.returnHour, booking.hour], [form.returnMinute, booking.minute]].forEach(([select, label]) => {
-      select.setAttribute('aria-label', label);
-    });
     validateBookingFields();
 
     languageButtons.forEach(function(btn){
@@ -1107,7 +1097,7 @@
       phone: normalizeIsraeliPhone(form.phone.value),
       email: form.email.value.trim(),
       date: isoTripDate(form.tripDate.value),
-      pickupTime: form.pickupHour.value + ':' + form.pickupMinute.value,
+      pickupTime: form.pickupTime.value,
       pickupCity: form.pickupCity.value.trim(),
       pickupAddress: form.origin.value.trim(),
       origin: form.pickupCity.value.trim() + ', ' + form.origin.value.trim(),
@@ -1115,7 +1105,7 @@
       dropoffAddress: form.destination.value.trim(),
       destination: form.dropoffCity.value.trim() + ', ' + form.destination.value.trim(),
       passengers: form.passengers.value,
-      returnTime: form.returnHour.value ? form.returnHour.value + ':' + form.returnMinute.value : '',
+      returnTime: form.returnTime.value,
       notes: form.notes.value.trim() || ''
     };
 
